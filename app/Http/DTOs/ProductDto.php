@@ -6,12 +6,13 @@ namespace App\Http\DTOs;
 class ProductDto
 {
     public function __construct(
-        public string $name,
-        public float $description,
-        public int $price,
-        public string $image,
-        public string $link,
-        public string $slug,
+        private int $product_id = 0,
+        private string $name = "",
+        private string $description = "",
+        private int $price = 0,
+        private string $image = "",
+        private string $link = "",
+        private string $slug = "",
     ) {}
 
 

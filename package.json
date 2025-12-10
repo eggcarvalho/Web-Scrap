@@ -21,6 +21,8 @@
         "@mui/icons-material": "^7.3.6",
         "@mui/material": "^7.3.6",
         "@vitejs/plugin-react": "^5.1.2",
+        "jquery": "^3.7.1",
+        "jquery-mask-plugin": "^1.14.16",
         "react": "^19.2.1",
         "react-dom": "^19.2.1"
     }

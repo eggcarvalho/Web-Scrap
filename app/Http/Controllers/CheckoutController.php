@@ -4,17 +4,30 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CheckIfProductExistsRequest;
 use App\Models\Checkout;
+use App\Services\ProductService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class CheckoutController extends Controller
 {
+
+    public function __construct(private ProductService $service) {}
     /**
      * Display a listing of the resource.
      */
     public function index(string $slug)
     {
-        return Inertia::render("Form");
+        try {
+            $product = $this->service->getProductBySlug($slug);
+            return Inertia::render(
+                "Checkout/Form",
+                [
+                    "product" => $product->toArray(),
+                ]
+            );
+        } catch (\Exception $e) {
+            return Inertia::render("Errors/ProductNotFound");
+        }
     }
 
     /**
