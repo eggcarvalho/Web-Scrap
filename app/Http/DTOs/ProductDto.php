@@ -19,6 +19,7 @@ class ProductDto
     public function toArray(): array
     {
         return [
+            "id" => $this->product_id,
             "name" => $this->name,
             "description" => $this->description,
             "price" => $this->price / 100,

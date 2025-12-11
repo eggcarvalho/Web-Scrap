@@ -9,6 +9,8 @@ function TextfieldMaskedComponent({
     required = false,
     mask,
     value = "",
+    error = false,
+    helperText = "",
     onchange = () => {},
 }) {
     const inputRef = useRef(null);
@@ -32,6 +34,8 @@ function TextfieldMaskedComponent({
             placeholder={placeholder}
             inputRef={inputRef}
             defaultValue={value}
+            error={error}
+            helperText={helperText}
             variant="outlined"
             sx={{
                 "& .MuiOutlinedInput-root": {

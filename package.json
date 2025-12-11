@@ -24,6 +24,7 @@
         "jquery": "^3.7.1",
         "jquery-mask-plugin": "^1.14.16",
         "react": "^19.2.1",
-        "react-dom": "^19.2.1"
+        "react-dom": "^19.2.1",
+        "toastify-js": "^1.12.0"
     }
 }
