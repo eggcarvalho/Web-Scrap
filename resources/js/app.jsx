@@ -1,5 +1,8 @@
 import "./bootstrap";
-import "../css/app.css"; // Importa o CSS global (se existir)
+import "../css/app.css";
+import { route } from 'ziggy-js';
+
+window.route = route;
 
 import { createRoot } from "react-dom/client";
 import { createInertiaApp } from "@inertiajs/react";
@@ -16,6 +19,9 @@ createInertiaApp({
         ),
     setup({ el, App, props }) {
         const root = createRoot(el);
+        // Passando a função route globalmente não é estritamente necessário se usar @routes no blade, 
+        // mas ajuda se quisermos usar 'route' importado ou customizado.
+        // O @routes no blade já injeta window.Ziggy.
         root.render(<App {...props} />);
     },
     progress: {
