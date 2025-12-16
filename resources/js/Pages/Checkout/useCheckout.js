@@ -222,16 +222,12 @@ export default function useCheckout(product_id) {
                 onStart: () => setProcessing(true),
 
                 // sucesso de verdade
-                onSuccess: () => {
-                    setProcessing(false);
-                    setThankYou(true); // aqui sim
+                onSuccess: (response) => {
+                    console.log(response);
                 },
 
                 // falha de validação
                 onError: (err) => {
-                    setProcessing(false);
-                    setThankYou(false); // garantir que desliga
-
                     Object.entries(err).map(([key, value]) => {
                         toastify({
                             text: value,
@@ -245,11 +241,6 @@ export default function useCheckout(product_id) {
                             },
                         }).showToast();
                     });
-                },
-
-                // sempre executa, mas não pode mudar thankYou
-                onFinish: () => {
-                    setProcessing(false);
                 },
             }
         );

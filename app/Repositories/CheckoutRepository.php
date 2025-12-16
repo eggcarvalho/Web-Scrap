@@ -10,6 +10,6 @@ class CheckoutRepository
 
     public function store(array $data)
     {
-        Checkout::create($data);
+        return Checkout::create($data);
     }
 }

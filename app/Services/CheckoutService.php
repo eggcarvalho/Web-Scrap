@@ -31,7 +31,7 @@ class CheckoutService
             'lead_id'           => $lead ? $lead->id : null,
         ];
 
-        $this->repository->store($vector);
+        $checkout = $this->repository->store($vector);
 
         // Buscar detalhes do produto para o email
         try {
@@ -39,7 +39,7 @@ class CheckoutService
             // Se não tiver, precisaremos adicionar ou usar o Model diretamente aqui (mas Service é melhor).
             // O DTO tem product_id.
             $product = \App\Models\Product::find($dto->product_id); // Fallback direto ao model por praticidade se service não tiver findById
-            
+
             if ($product) {
                 \Illuminate\Support\Facades\Mail::to($dto->email)
                     ->queue((new \App\Mail\OrderReceived($product->toArray(), $dto))->onQueue('emails'));
@@ -48,5 +48,7 @@ class CheckoutService
             // Logar erro de envio de email mas não falhar o checkout
             \Illuminate\Support\Facades\Log::error('Falha ao enviar email de pedido: ' . $e->getMessage());
         }
+
+        return $checkout;
     }
 }

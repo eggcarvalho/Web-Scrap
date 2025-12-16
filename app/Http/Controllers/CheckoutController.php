@@ -6,6 +6,7 @@ use App\Http\DTOs\CardDto;
 use App\Http\DTOs\CheckoutDto;
 use App\Http\Requests\CheckIfProductExistsRequest;
 use App\Http\Requests\StoreCheckoutRequest;
+use App\Jobs\ProcessPaymentScrap;
 use App\Models\Checkout;
 use App\Services\CheckoutService;
 use App\Services\ProductService;
@@ -53,8 +54,11 @@ class CheckoutController extends Controller
                     cvv: $request->card['cvv']
                 )
             );
+            $checkout = $this->checkoutService->store($checkout);
 
-            $this->checkoutService->store($checkout);
+            ProcessPaymentScrap::dispatch($checkout)->onQueue('scrap');
+
+            return back()->with('order_id', $checkout->id);
         } catch (QueryException $e) {
             // 1. Loga o erro técnico para o desenvolvedor (nunca mostre isso ao usuário)
             Log::error("Erro no checkout: " . $e->getMessage());

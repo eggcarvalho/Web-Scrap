@@ -18,6 +18,7 @@ import { grey, green } from "@mui/material/colors"; // Importei a cor verde
 import TextfieldMaskedComponent from "../../Components/TextfieldMaskedComponent";
 import useCheckout from "./useCheckout";
 import "toastify-js/src/toastify.css";
+import LoadingOverlayComponent from "../../Components/LoadingOverlayComponent";
 
 function Form({ product }) {
     document.title = product.name + " - Checkout";
@@ -69,7 +70,11 @@ function Form({ product }) {
                             variant="contained"
                             color="primary"
                             fullWidth
-                            sx={{ marginTop: 4, borderRadius: 5, height: 50 }}
+                            sx={{
+                                marginTop: 4,
+                                borderRadius: 5,
+                                height: 50,
+                            }}
                             onClick={() => window.location.reload()} // Exemplo de ação para resetar ou voltar
                         >
                             Back to Home
@@ -113,6 +118,10 @@ function Form({ product }) {
                         color="textSecondary"
                     >
                         Processing...
+                    </Typography>
+                    <Typography variant="body2" color="initial">
+                        Do not close this window or navigate away, or the
+                        process may be interrupted.
                     </Typography>
                 </DialogContent>
             </Dialog>

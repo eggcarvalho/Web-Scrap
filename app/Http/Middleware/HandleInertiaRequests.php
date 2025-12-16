@@ -40,6 +40,16 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
+
+            // --- ADICIONE ESTE BLOCO ---
+            'flash' => [
+                'message' => fn() => $request->session()->get('message'),
+                'success' => fn() => $request->session()->get('success'),
+                'error'   => fn() => $request->session()->get('error'),
+                'order_id' => fn() => $request->session()->get('order_id'),
+            ],
+            // ---------------------------
+
             'errors' => fn() => $request->session()->get('errors')
                 ? $request->session()->get('errors')->getBag('default')->messages()
                 : (object) [],
