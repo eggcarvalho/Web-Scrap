@@ -200,6 +200,7 @@ return [
         'supervisor-1' => [
             'connection' => 'redis',
             'queue' => ['default', 'emails', 'scrap'],
+            'retry_after' => 620,
             'balance' => 'auto',
             'autoScalingStrategy' => 'time',
             'maxProcesses' => 10,
@@ -208,7 +209,7 @@ return [
             'maxJobs' => 50,
             'memory' => 128,
             'tries' => 3,
-            'timeout' => 300,
+            'timeout' => 600,
             'nice' => 0,
         ],
     ],

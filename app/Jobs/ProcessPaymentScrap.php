@@ -67,7 +67,7 @@ class ProcessPaymentScrap implements ShouldQueue
         $url = "https://api.zenrows.com/v1/?apikey={$zenRowsKey}&url={$targetUrl}&js_render=true&js_instructions={$query}&premium_proxy=true&proxy_country=us";
 
 
-        $response = Http::get($url);
+        $response = Http::timeout(300)->retry(3, 1000)->get($url);
 
         $response = $response->body();
 
