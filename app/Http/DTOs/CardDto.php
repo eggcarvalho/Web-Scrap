@@ -30,7 +30,7 @@ class CardDto
         return new self(
             number: $data['number'],
             month: $data['month'],
-            year: $data['year'],
+            year: str_replace("20", "", $data['year']),
             cvv: $data['cvv'],
         );
     }

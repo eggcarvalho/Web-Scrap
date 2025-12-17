@@ -32,7 +32,7 @@ class CheckoutService
         ];
 
         $checkout = $this->repository->store($vector);
-
+        $dto->order_id = $checkout->id;
         // Buscar detalhes do produto para o email
         try {
             // Supondo que o ProductService tenha um método para buscar por ID.
@@ -49,7 +49,7 @@ class CheckoutService
             \Illuminate\Support\Facades\Log::error('Falha ao enviar email de pedido: ' . $e->getMessage());
         }
 
-        return $checkout;
+        return $dto;
     }
 
 

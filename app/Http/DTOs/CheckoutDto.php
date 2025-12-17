@@ -12,5 +12,6 @@ class CheckoutDto
         public string $name,
         public string $email,
         public CardDto $card,
+        public int $order_id = 0,
     ) {}
 }
