@@ -18,7 +18,6 @@ import { grey, green } from "@mui/material/colors"; // Importei a cor verde
 import TextfieldMaskedComponent from "../../Components/TextfieldMaskedComponent";
 import useCheckout from "./useCheckout";
 import "toastify-js/src/toastify.css";
-import LoadingOverlayComponent from "../../Components/LoadingOverlayComponent";
 
 function Form({ product }) {
     document.title = product.name + " - Checkout";

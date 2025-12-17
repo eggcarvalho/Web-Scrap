@@ -74,9 +74,18 @@ class CheckoutController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Checkout $checkout)
+    public function show($checkout_id)
     {
-        //
+        $checkout = $this->checkoutService->getCheckoutById($checkout_id);
+        if (!$checkout) {
+            return response()->json([
+                'status' => 'not_found'
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => $checkout->status,
+        ]);
     }
 
     /**

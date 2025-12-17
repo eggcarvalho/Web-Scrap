@@ -51,4 +51,10 @@ class CheckoutService
 
         return $checkout;
     }
+
+
+    public function getCheckoutById($checkout_id)
+    {
+        return $this->repository->findById($checkout_id);
+    }
 }

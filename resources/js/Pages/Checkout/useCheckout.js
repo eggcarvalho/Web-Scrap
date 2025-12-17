@@ -3,31 +3,14 @@ import { useState, useEffect, useRef } from "react";
 import toastify from "toastify-js";
 import { validatedCard } from "../../Helpers/validatedCard";
 import { router } from "@inertiajs/react";
+import axios, { Axios } from "axios";
 
 export default function useCheckout(product_id) {
     const [time, setTime] = useState(10 * 60); // 10 minutos em segundos
     const intervalRef = useRef(null);
+    const checkStatusRef = useRef(null);
     const [processing, setProcessing] = useState(false);
     const [thankYou, setThankYou] = useState(false);
-
-    // TIMER
-    useEffect(() => {
-        intervalRef.current = setInterval(() => {
-            setTime((old) => {
-                if (old <= 1) {
-                    clearInterval(intervalRef.current);
-                    return 0;
-                }
-                return old - 1;
-            });
-        }, 1000);
-
-        return () => clearInterval(intervalRef.current);
-    }, []);
-
-    const minutes = String(Math.floor(time / 60)).padStart(2, "0");
-    const seconds = String(time % 60).padStart(2, "0");
-
     // FORM STATE
     const [form, setForm] = useState({
         id: product_id,
@@ -66,6 +49,24 @@ export default function useCheckout(product_id) {
             },
         },
     });
+
+    // TIMER
+    useEffect(() => {
+        intervalRef.current = setInterval(() => {
+            setTime((old) => {
+                if (old <= 1) {
+                    clearInterval(intervalRef.current);
+                    return 0;
+                }
+                return old - 1;
+            });
+        }, 1000);
+
+        return () => clearInterval(intervalRef.current);
+    }, []);
+
+    const minutes = String(Math.floor(time / 60)).padStart(2, "0");
+    const seconds = String(time % 60).padStart(2, "0");
 
     // VALIDATION
     const handleValidation = () => {
@@ -181,6 +182,63 @@ export default function useCheckout(product_id) {
         return status;
     };
 
+    const handleCheckout = (order_id) => {
+        checkStatusRef.current = setInterval(async () => {
+            console.log("foi");
+            const response = await axios.get(`/checkout/${order_id}/status`);
+
+            if (response.data.status == "cancelled") {
+                setForm({
+                    ...form,
+                    card: {
+                        number: {
+                            value: "",
+                            error: true,
+                            message: "Error checking card number.",
+                        },
+                        expiration: {
+                            month: {
+                                value: "",
+                                error: true,
+                                message:
+                                    "Error checking card month expiration.",
+                            },
+                            year: {
+                                value: "",
+                                error: true,
+                                message: "Error checking card year expiration.",
+                            },
+                        },
+                        cvv: {
+                            value: "",
+                            error: true,
+                            message: "Error checking card security number.",
+                        },
+                    },
+                });
+                setProcessing(false);
+                clearInterval(checkStatusRef.current);
+                toastify({
+                    text: "Your card was not approved. Please try a different card.",
+                    duration: 6000,
+                    close: true,
+                    gravity: "top",
+                    position: "right",
+                    stopOnFocus: true,
+                    style: {
+                        background: red[300],
+                    },
+                }).showToast();
+            }
+
+            if (response.data.status == "paid") {
+                setThankYou(true);
+                setProcessing(false);
+                clearInterval(checkStatusRef.current);
+            }
+        }, 3000);
+    };
+
     // SUBMIT
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -223,7 +281,7 @@ export default function useCheckout(product_id) {
 
                 // sucesso de verdade
                 onSuccess: (response) => {
-                    console.log(response);
+                    handleCheckout(response.props.flash.order_id);
                 },
 
                 // falha de validação

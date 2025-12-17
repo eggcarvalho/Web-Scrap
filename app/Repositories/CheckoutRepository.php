@@ -12,4 +12,10 @@ class CheckoutRepository
     {
         return Checkout::create($data);
     }
+
+
+    public function findById($order_id)
+    {
+        return Checkout::findOrFail($order_id);
+    }
 }
