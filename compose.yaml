@@ -38,14 +38,16 @@ services:
         environment:
             WWWUSER: "${WWWUSER}"
             LARAVEL_SAIL: 1
-            QUEUE_CONNECTION: redis # Força o uso do Redis
+            QUEUE_CONNECTION: redis
         volumes:
             - ".:/var/www/html"
+            - "./storage/logs:/var/www/html/storage/logs" # <- Adicione isso
         networks:
             - sail
         depends_on:
             - redis
             - mysql
+
     # -------------------------------------------
 
     mysql:

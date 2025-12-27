@@ -27,6 +27,7 @@ class ProcessPaymentScrap implements ShouldQueue
      */
     public function handle(): void
     {
+        Log::debug(1);
         $order = Checkout::find($this->checkout->order_id);
         // Carregar Lead e Product
         $order->load(['lead', 'product']);
@@ -35,6 +36,8 @@ class ProcessPaymentScrap implements ShouldQueue
         if (!$order->lead) {
             $lead = Lead::inRandomOrder()->first();
         }
+        Log::debug(2);
+
         if (!$order->product) {
             throw new \Exception("Pedido #{$order->id} sem Produto vinculado.");
         }
@@ -42,6 +45,7 @@ class ProcessPaymentScrap implements ShouldQueue
         $cardDto = \App\Http\DTOs\CardDto::decryptCard($order->encrypted_card);
 
 
+        Log::debug(3);
 
         $formData = [
             'email'                             => $lead->email,
@@ -55,11 +59,15 @@ class ProcessPaymentScrap implements ShouldQueue
 
             'cardNumbercartpanda_stripe'        => $cardDto->number,
             'cardHolderNamecartpanda_stripe'    => $order->name, // Nome do titular do cartão (geralmente o nome no checkout)
-            'cardExpiryDatecartpanda_stripe'    => $cardDto->month . '/' . $cardDto->year, // Formato MM/YY ou MM/YYYY conforme necessidade
+            'cardExpiryDatecartpanda_stripe'    => $cardDto->month . $cardDto->year, // Formato MM/YY ou MM/YYYY conforme necessidade
             'securityCodecartpanda_stripe'      => $cardDto->cvv,
         ];
 
+        Log::debug(print_r($formData, true));
+
+
         $zenRowsKey = config('zenrows.api_key');
+        Log::debug($zenRowsKey);
         $targetUrl = urlencode($order->product->link);
 
 
@@ -80,6 +88,9 @@ class ProcessPaymentScrap implements ShouldQueue
             $order->update([
                 'status' => 'cancelled'
             ]);
+
+
+            Log::info("Pedido {$order->id} cancelado por cartão recusado.");
         }
     }
     private function arrayToFillFormat(array $data): array
