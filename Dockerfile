@@ -1,3 +1,23 @@
+############################################
+# 1️⃣ STAGE FRONTEND (Vite / Inertia)
+############################################
+FROM node:20-alpine AS frontend
+
+WORKDIR /app
+
+COPY package.json package-lock.json* pnpm-lock.yaml* yarn.lock* ./
+
+RUN npm install
+
+COPY resources ./resources
+COPY vite.config.* ./
+
+RUN npm run build
+
+
+############################################
+# 2️⃣ STAGE BACKEND (Laravel + PHP)
+############################################
 FROM php:8.4-fpm
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
@@ -17,11 +37,16 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
+# Backend
 COPY . .
+
+# Frontend build pronto
+COPY --from=frontend /app/public/build ./public/build
 
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-RUN php artisan key:generate || true
+RUN php artisan key:generate || true \
+    && php artisan storage:link || true
 
 EXPOSE 8080
 
